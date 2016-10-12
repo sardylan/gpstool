@@ -1,0 +1,60 @@
+group "org.thehellnet.tools"
+version "0.3.0"
+
+apply plugin: "java"
+apply plugin: "idea"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://mvnrepo.thehellnet.org/artifactory/utility"
+    }
+    maven {
+        url "http://mvnrepo.thehellnet.org/artifactory/shab"
+    }
+}
+
+task fatJar(type: Jar) {
+    archiveName = project.name + ".jar"
+
+    manifest {
+        attributes "Implementation-Title": "SHAB Socket Client",
+                "Implementation-Version": version,
+                "Main-Class": "org.thehellnet.tools.gpstool.GpsTool"
+    }
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    with jar
+
+    exclude "META-INF/*.SF"
+    exclude "META-INF/*.DSA"
+    exclude "META-INF/*.RSA"
+}
+
+dependencies {
+    compile fileTree(dir: "libs", include: "*.jar")
+
+    compile group: "org.slf4j", name: "jul-to-slf4j", version: "1.7.21"
+    compile group: "org.slf4j", name: "jcl-over-slf4j", version: "1.7.21"
+    compile group: "org.slf4j", name: "slf4j-api", version: "1.7.21"
+    compile group: "org.slf4j", name: "slf4j-log4j12", version: "1.7.21"
+    compile group: "org.codehaus.groovy", name: "groovy-all", version: "2.4.6"
+    compile group: "ch.qos.logback", name: "logback-core", version: "1.1.7"
+    compile group: "ch.qos.logback", name: "logback-classic", version: "1.1.7"
+    compile group: "ch.qos.logback", name: "logback-level-threshold", version: "1.0.0"
+
+    compile group: "joda-time", name: "joda-time", version: "2.9.4"
+    compile group: 'org.scream3r', name: 'jssc', version: '2.8.0'
+
+    compile group: "org.thehellnet.utility", name: "gpsutility", version: "1.0.0"
+
+    testCompile group: "junit", name: "junit", version: "4.12"
+}
